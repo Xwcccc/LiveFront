@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <title>Hitsz-Live</title>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="./css/element.css">
+    <link href="./css/main.css" rel="stylesheet">
+    <link href="./css/blog-edit.css" rel="stylesheet">
+
+    <style type="text/css">
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="header">
+        <div class="header-cancel-btn" @click="goBack">取消</div>
+        <div class="header-title">&nbsp;&nbsp;发表评论<i class="el-icon-info"></i></div>
+        <div class="header-commit">
+            <div class="header-commit-btn" @click="submitShopComment">发布</div>
+        </div>
+    </div>
+    <div class="blog-content">
+        <textarea v-model="params.content" placeholder="欢迎评论，请理智发言哦~"></textarea>
+    </div>
+</div>
+<script src="./js/vue.js"></script>
+<script src="./js/axios.min.js"></script>
+<!-- 引入组件库 -->
+<script src="./js/element.js"></script>
+<script src="./js/common.js"></script>
+<script src="./js/footer.js"></script>
+<script>
+
+    const app = new Vue({
+        el: "#app",
+        data() {
+            return {
+                util,
+                params: {}
+            }
+        },
+        created() {
+            //this.checkLogin();
+        },
+        methods: {
+            submitShopComment() {
+                let {...data} = this.params;
+                data.shopId = util.getUrlParam("shopId");
+                axios.post("/shop-comments/add", data)
+                    .then(resp => location.href = "/shop-detail.html?id=" + util.getUrlParam("shopId"))
+                    .catch(this.$message.error)
+            },
+            checkLogin() {
+                // 获取token
+                let token = sessionStorage.getItem("token");
+                if (!token) {
+                    location.href = "login.html"
+                }
+                // 查询用户信息
+                axios.get("/user/me")
+                    .then()
+                    .catch(err => {
+                        this.$message.error(err);
+                        setTimeout(() => location.href = "login.html", 200)
+                    })
+            },
+            goBack() {
+                location.href = "/shop-detail.html?id=" + util.getUrlParam("shopId")
+            }
+        },
+
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+.comment-list {
+    background-color: #eee;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    height: 100%;
+    overflow-y: auto;
+}
+.commentField-box{
+    width: 100%;
+}
+.comment-user-icon {
+ }
+.comment-user-name {
+    width: 3%;
+    overflow: hidden;
+}
+.comment-liked {
+    width: 2%;
+    display: flex;
+    justify-content: flex-end;
+}
+.comment-title {
+    padding: 2px 10px;
+    height: 36px;
+    width: 92%;
+    overflow: hidden;
+}
+.comment-foot {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0 5px 0;
+    padding: 0 10px;
+}

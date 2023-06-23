@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+  <title>Hitsz-Live</title>
+  <link href="./css/login.css" rel="stylesheet">
+  <!-- 引入样式 -->
+  <link rel="stylesheet" href="./css/element.css">
+
+  <style type="text/css">
+      .el-radio__input.is-checked .el-radio__inner {
+          border-color: #F63;
+          background: #F63;
+      }
+      .el-input__inner:focus {
+          border: 1px solid #F63;
+      }
+  </style>
+</head>
+<body>
+<div id="app">
+  <div class="login-container">
+    <div class="header">
+      <div class="header-back-btn" @click="goBack"><i class="el-icon-arrow-left"></i></div>
+      <div class="header-title">密码登录&nbsp;&nbsp;&nbsp;</div>
+    </div>
+    <div class="content">
+      <div class="login-form">
+        <el-input placeholder="请输入账号" v-model="form.account">
+        </el-input>
+        <div style="height: 5px"></div>
+        <el-input placeholder="请输入密码..." type="password" v-model="form.password" v-show="!showPass"/>
+        </el-input>
+        <el-input placeholder="请输入密码..." type="text" v-model="form.password" v-show="showPass"/>
+        </el-input>
+        <!-- 密码隐藏显示按钮 -->
+        <span @click="showPass = ! showPass">
+          <span v-show="showPass">
+            <svg t="1686555151844" class="icon" viewBox="0 0 1024 1024"  version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2416" width="18" height="18">
+              <path d="M512 832c-156.448 0-296.021333-98.730667-418.410667-291.605333a52.938667 52.938667 0 0 1 0-56.789334C215.978667 290.730667 355.552 192 512 192c156.448 0 296.021333 98.730667 418.410667 291.605333a52.938667 52.938667 0 0 1 0 56.789334C808.021333 733.269333 668.448 832 512 832z m0-576c-129.514667 0-249.461333 83.850667-360.117333 256C262.538667 684.149333 382.485333 768 512 768c129.514667 0 249.461333-83.850667 360.117333-256C761.461333 339.850667 641.514667 256 512 256z m0 405.333333c-83.210667 0-150.666667-66.858667-150.666667-149.333333S428.789333 362.666667 512 362.666667s150.666667 66.858667 150.666667 149.333333S595.210667 661.333333 512 661.333333z m0-64c47.552 0 86.101333-38.208 86.101333-85.333333S559.552 426.666667 512 426.666667c-47.552 0-86.101333 38.208-86.101333 85.333333s38.549333 85.333333 86.101333 85.333333z" fill="#000000" p-id="2417"></path></svg>
+          </span>
+          <span v-show="!showPass">
+            <svg t="1686555255188" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2556" width="18" height="18">
+              <path d="M469.333333 681.386667c-36.053333-2.432-71.253333-8.533333-104.96-17.92l-69.802666 149.674666a42.368 42.368 0 0 1-56.533334 20.266667 42.666667 42.666667 0 0 1-20.821333-56.32l66.986667-143.658667a451.712 451.712 0 0 1-148.906667-112.682666 388.693333 388.693333 0 0 1-70.570667-119.338667 42.666667 42.666667 0 1 1 80.128-29.354667 303.445333 303.445333 0 0 0 55.210667 93.098667C270.634667 547.413333 383.018667 597.333333 505.728 597.333333c122.752 0 235.136-49.962667 305.706667-132.181333a303.445333 303.445333 0 0 0 55.210666-93.098667 42.666667 42.666667 0 0 1 80.128 29.354667 388.693333 388.693333 0 0 1-70.570666 119.338667 423.68 423.68 0 0 1-18.773334 20.48l104.362667 104.362666a42.666667 42.666667 0 0 1-0.298667 60.032 42.368 42.368 0 0 1-60.032 0.298667l-109.653333-109.653333c-20.48 14.08-42.24 26.581333-65.024 37.418666l66.901333 143.36a42.666667 42.666667 0 0 1-20.821333 56.362667 42.368 42.368 0 0 1-56.533333-20.266667l-69.717334-149.546666a520.533333 520.533333 0 0 1-91.946666 16.810666v130.645334A42.666667 42.666667 0 0 1 512 853.333333c-23.722667 0-42.666667-18.944-42.666667-42.24v-129.706666z" fill="#3D3D3D" p-id="2557"></path><path d="M176.128 524.373333a42.368 42.368 0 0 1 60.032 0.256 42.666667 42.666667 0 0 1 0.298667 60.074667l-121.216 121.216a42.368 42.368 0 0 1-60.074667-0.298667 42.666667 42.666667 0 0 1-0.298667-60.032l121.258667-121.258666z" fill="#3D3D3D" p-id="2558"></path></svg>
+          </span>
+        </span>
+        <div style="height: 5px"></div>
+        <el-button @click="login" style="width: 100%; background-color:#f63; color: #fff;">登录</el-button>
+        <div style="text-align: right; color:#333333; margin: 5px 0"><a href="/login.html">验证码登录</a></div>
+      </div>
+      <div class="login-radio">
+        <div>
+          <input type="radio" name="readed" v-model="radio" value="1">
+          <label for="readed"></label>
+        </div>
+        <div>我已阅读并同意
+          <a href="javascript:void(0)">
+            《Hitsz-Live用户服务协议》</a>、
+          <a href="javascript:void(0)">《隐私政策》</a>
+          等，接受免除或者限制责任、诉讼管辖约定等粗体标示条款
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="./js/vue.js"></script>
+<script src="./js/axios.min.js"></script>
+<!-- 引入组件库 -->
+<script src="./js/element.js"></script>
+<script src="./js/common.js"></script>
+<script src="./js/encrypt.js"></script>
+<script>
+
+  const app = new Vue({
+    el: "#app",
+    data: {
+      radio: "",
+      form:{
+      },
+      showPass:false,
+      ssKey:""
+    },
+    created() {
+      this.getKey();
+    },
+    methods: {
+      getKey(){
+        axios.post("/encrypt/getPubKey")
+                .then(({data}) => this.ssKey=data)
+                .catch(err => this.$message.error(err))
+      },
+      login(){
+        var reg = /^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*,\._])[0-9a-zA-Z!@#$%^&*,\\._]{6,13}$/;
+        if(!reg.test(this.form.password)){
+          this.$message.error("密码不符合规则!至少由数字、符号和大小写字母组成，长度在6-13之间!")
+          return;
+        }
+        if(!this.radio){
+          this.$message.error("请先确认阅读用户协议！");
+          return;
+        }
+        var encrypt = new JSEncrypt();
+        encrypt.setPublicKey(this.ssKey);
+        var data = encrypt.encrypt(this.form.password);
+        this.form.password = data;
+        axios.post("/user/loginByPwd", this.form)
+          .then(({data}) => {
+            if(data){
+              // 保存用户信息到session
+              sessionStorage.setItem("token", data);
+            }
+            // 跳转到首页
+            location.href = "/info.html"
+          })
+          .catch(err => this.$message.error(err))
+      },
+      goBack(){
+        history.back();
+      }
+    }
+  })
+</script>
+</body>
+</html>

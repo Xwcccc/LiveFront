@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+  <title>Hitsz-Live</title>
+  <!-- 引入样式 -->
+  <link rel="stylesheet" href="./css/element.css">
+  <link href="./css/main.css" rel="stylesheet">
+  <link href="./css/info.css" rel="stylesheet">
+
+  <style type="text/css">
+
+  </style>
+</head>
+<body>
+<div id="app">
+  <div class="header">
+    <div class="header-cancel-btn" @click="goBack">返回</div>
+    <div class="header-title">&nbsp;&nbsp;资料编辑<i class="el-icon-info"></i></div>
+  </div>
+  <div class="edit-container">
+    <div class="info-box">
+      <div class="info-item">
+        <div class="info-label">头像</div>
+        <input type="file" @change="fileSelected" name="file" ref="fileInput" style="display: none">
+        <div class="info-btn" @click="openFileDialog">
+          <img width="35" :src="user.icon || '/imgs/icons/default-icon.png'" alt="">
+          <div><i class="el-icon-arrow-right"></i></div>
+        </div>
+      </div>
+      <div class="pic-list">
+        <div class="pic-box" v-for="(f,i) in fileList" :key="i">
+          <img :src="f" alt="">
+          <i class="el-icon-close" @click="deletePic(i)"></i>
+        </div>
+      </div>
+      <div style="height: 5px"></div>
+      <div class="divider"></div>
+      <div class="info-item">
+        <div class="info-label">城市</div>
+        <div class="info-btn">
+          <input v-model="params.city" type="text" placeholder="城市">
+          <div>
+            <i class="el-icon-arrow-right"></i>
+          </div>
+        </div>
+      </div>
+      <div style="height: 5px"></div>
+      <div class="divider"></div>
+      <div class="info-item">
+        <div class="info-label">个人介绍</div>
+        <div class="info-btn">
+          <input v-model="params.introduce" type="text" placeholder="个人介绍">
+          <div>
+            <i class="el-icon-arrow-right"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="height: 5px"></div>
+    <div class="info-box">
+      <div class="info-item">
+        <div class="info-label">性别</div>
+        <div class="radio-inline gender">
+          <input type="radio" name="gender" id="man" value=false
+                 v-model="params.gender"> 男
+        </div>
+        <div class="radio-inline">
+          <input type="radio" name="gender" id="women" value=true
+                 v-model="params.gender"> 女
+        </div>
+      </div>
+      <div style="height: 5px"></div>
+      <div class="divider"></div>
+      <div class="info-item">
+        <div class="info-label">生日</div>
+        <div class="info-btn">
+          <input v-model="params.birthday" type="text" placeholder="格式:xxxx-xx-xx">
+          <div><i class="el-icon-arrow-right"></i></div>
+        </div>
+      </div>
+      <div style="height: 5px"></div>
+      <div class="divider"></div>
+      <div class="info-item">
+        <div class="info-label">新用户名</div>
+        <div class="info-btn">
+          <input v-model="params.account" type="text" placeholder="新账号">
+          <div><i class="el-icon-arrow-right"></i></div>
+        </div>
+      </div>
+      <div style="height: 5px"></div>
+      <div class="divider"></div>
+      <div class="info-item">
+        <div class="info-label">新密码</div>
+        <div class="info-btn">
+          <!-- 密码输入框 -->
+          <input placeholder="请输入密码..." type="password" v-model="params.password" />
+          <div><i class="el-icon-arrow-right"></i></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="header-commit" style="text-align: center">
+    <button class="header-commit-btn" @click="uploadNewUserInfo" >发布</button>
+  </div>
+  <foot-bar :active-btn="4"></foot-bar>
+</div>
+<script src="./js/vue.js"></script>
+<script src="./js/axios.min.js"></script>
+<!-- 引入组件库 -->
+<script src="./js/element.js"></script>
+<script src="./js/common.js"></script>
+<script src="./js/footer.js"></script>
+<script src="./js/encrypt.js"></script>
+<script>
+
+  const app = new Vue({
+    el: "#app",
+    data: {
+      user: "",
+      fileList: [], // 文件列表
+      params: {},
+      ssKey:""
+    },
+    created() {
+      this.checkLogin();
+      this.getDBKey();
+    },
+    methods: {
+      getDBKey(){
+        axios.post("/encrypt/getDBPubKey")
+                .then(({data}) => this.ssKey=data)
+                .catch(err => this.$message.error(err))
+      },
+      checkLogin() {
+        // 查询用户信息
+        axios.get("/user/me")
+        .then(({data}) => {
+          this.user = data;
+        })
+        .catch(err => {
+          this.$message.error(err);
+          setTimeout(() => location.href = "login.html", 1000)
+        })
+      },
+      uploadNewUserInfo() {
+        //校验密码
+        var reg = /^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*,\._])[0-9a-zA-Z!@#$%^&*,\\._]{6,13}$/;
+        if(!reg.test(this.params.password)){
+          this.$message.error("密码不符合规则!至少由数字、符号和大小写字母组成，长度在6-13之间!")
+          return;
+        }
+        //加密再发送
+        var encrypt2 = new JSEncrypt();
+        encrypt2.setPublicKey(this.ssKey);
+        var encPwd = encrypt2.encrypt(this.params.password);
+        this.params.password = encPwd;
+        let {...data} = this.params;
+        data.images = this.fileList.join(",");
+        data.userId = this.user.id;
+        axios.post("/user/edit", data)
+                .then(resp => {
+                          location.href = "/info.html";
+                        }
+                )
+                .catch(this.$message.error)
+      },
+      goBack(){
+        history.back();
+      },
+      openFileDialog() {
+        this.$refs.fileInput.click();
+      },
+      deletePic(i) {
+        axios.get("/upload/blog/delete?name=" + this.fileList[i] )
+                .then(() => this.fileList.splice(i, 1))
+                .catch(this.$message.error)
+      },
+      fileSelected() {
+        let file = this.$refs.fileInput.files[0];
+        let formData = new FormData();
+        formData.append("file", file);
+        const config = {
+          headers: {"Content-Type": "multipart/form-data;boundary=" + new Date().getTime()}
+        };
+        axios
+                .post("/upload/blog", formData, config)
+                .then(({data}) => {
+                          this.fileList.push('/imgs' + data);
+                        }
+                )
+                .catch(this.$message.error);
+      }
+    },
+
+  })
+</script>
+</body>
+</html>
